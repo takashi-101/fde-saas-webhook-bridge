@@ -191,5 +191,13 @@ tests/           ユニットテスト（unittest）
 .github/workflows/tests.yml   CI（Python 3.11、3.12でテストとデモを実行）
 ```
 
+## 根拠（学習）
+
+| 機能 | 裏付けになる学習（発行元・名称・発行日） | 照会先（Credly） |
+|---|---|---|
+| HMAC-SHA256による署名検証 | Coursera「Google Cybersecurity Professional Certificate(v.2)」2026年11月12日 | https://www.credly.com/badges/90bbb775-f9b8-4aef-bc24-1ed7c67d17e4 |
+| 冪等性・リトライ・DLQ（処理できなかった通知の退避先） | Amazon Web Services Training and Certification「AWS Knowledge: Events and Workflows - Training Badge」2025年5月14日 | https://www.credly.com/badges/c575ff2b-80a7-4433-99d5-f26eeb7cda15 |
+| 受信記録のSQLiteへの保存 | Amazon Web Services Training and Certification「AWS Educate Getting Started with Databases - Training Badge」2025年6月1日 | https://www.credly.com/badges/0f3404b3-6419-4d48-934f-507f0364e032 |
+
 ## ライセンス
 MIT
