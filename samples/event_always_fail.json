@@ -1,0 +1,9 @@
+{
+  "event_id": "evt-2002",
+  "type": "ticket.created",
+  "data": {
+    "ticket_id": "T-2002",
+    "subject": "sample inquiry (fictitious)",
+    "simulate": "always_fail"
+  }
+}
