@@ -1,14 +1,12 @@
 # fde-saas-webhook-bridge：署名検証・冪等性・リトライ・DLQを備えたWebhook受信サーバー（Python標準ライブラリのみ）
 
-[![tests](https://github.com/takashi-101/fde-saas-webhook-bridge/actions/workflows/tests.yml/badge.svg)](https://github.com/takashi-101/fde-saas-webhook-bridge/actions/workflows/tests.yml)
-
 Webhook（あるシステムで起きた出来事を、HTTPのPOSTで別のシステムへ知らせる仕組み）を受け取る、汎用の受信サーバーです。特定のSaaSとの連携は実装していません。通知の形式は架空のもので、下流の処理（通知を受けて実際に行う処理）はデモ用の代わりの処理です。
 
 ## 30秒で読む要点
 - **1コマンドで端から端まで確認できます**：`python -m webhook_bridge demo` が、`http.server`（標準ライブラリのHTTPサーバー）を127.0.0.1（自分のPCの中だけで通信するアドレス）で起動し、`urllib`（標準ライブラリのHTTPクライアント）で自分自身へ7件の通知を送り、10項目の結果を照合して表示します。1項目でも合わなければ終了コード1で終わります。
 - **署名検証**：受信した本文のバイト列に対してHMAC-SHA256（共有の秘密鍵と本文から計算する、改ざん検知用の値）を計算し、`hmac.compare_digest`（内容によって比較時間が変わらない比較）で照合します。署名が無い・合わない通知は401で拒否し、処理も記録もしません。
 - **冪等性・リトライ・DLQ**：同じ `event_id` の通知は1回だけ処理します（冪等性：同じ通知を何度受け取っても、処理は1回だけになる性質）。受信の記録はSQLite（ファイル1つで動くデータベース）に残すため、再起動後も重複を検知します。処理の失敗は最大3回まで指数バックオフ（再試行のたびに待ち時間を倍にする方法）で再試行し、それでも失敗した通知はDLQ（デッドレターキュー：処理できなかった通知を退避しておく場所）に移します。
-- **標準ライブラリのみ**：外部パッケージ、有料API、APIキー、外部への通信を使いません。テストは26件です。CI（変更のたびにテストを自動で実行する仕組み）では、Python 3.11と3.12でテストとデモを実行します。
+- **標準ライブラリのみ**：外部パッケージ、有料API、APIキー、外部への通信を使いません。テストは26件です。
 
 ## 処理の流れ
 ```mermaid
@@ -188,16 +186,17 @@ webhook_bridge/
   __main__.py    コマンド（demo、serve、send、dlq）
 samples/         送信用の通知の見本（架空）
 tests/           ユニットテスト（unittest）
-.github/workflows/tests.yml   CI（Python 3.11、3.12でテストとデモを実行）
 ```
 
 ## 根拠（学習）
 
-| 機能 | 裏付けになる学習（発行元・名称・発行日） | 照会先（Credly） |
-|---|---|---|
-| HMAC-SHA256による署名検証 | Coursera「Google Cybersecurity Professional Certificate(v.2)」2026年11月12日 | https://www.credly.com/badges/90bbb775-f9b8-4aef-bc24-1ed7c67d17e4 |
-| 冪等性・リトライ・DLQ（処理できなかった通知の退避先） | Amazon Web Services Training and Certification「AWS Knowledge: Events and Workflows - Training Badge」2025年5月14日 | https://www.credly.com/badges/c575ff2b-80a7-4433-99d5-f26eeb7cda15 |
-| 受信記録のSQLiteへの保存 | Amazon Web Services Training and Certification「AWS Educate Getting Started with Databases - Training Badge」2025年6月1日 | https://www.credly.com/badges/0f3404b3-6419-4d48-934f-507f0364e032 |
+| 求められる力 | 機能 | 裏付けになる学習（発行元・名称・発行日） | 照会先（Credly） |
+|---|---|---|---|
+| セキュリティ・ガバナンス | HMAC-SHA256による署名検証 | Coursera「Google Cybersecurity Professional Certificate(v.2)」2026年11月12日 | https://www.credly.com/badges/90bbb775-f9b8-4aef-bc24-1ed7c67d17e4 |
+| クラウドと閉域の基盤 | 冪等性・リトライ・DLQ（処理できなかった通知の退避先） | Amazon Web Services Training and Certification「AWS Knowledge: Events and Workflows - Training Badge」2025年5月14日 | https://www.credly.com/badges/c575ff2b-80a7-4433-99d5-f26eeb7cda15 |
+| データ活用（Python・SQL・BI） | 受信記録のSQLiteへの保存 | Amazon Web Services Training and Certification「AWS Educate Getting Started with Databases - Training Badge」2025年6月1日 | https://www.credly.com/badges/0f3404b3-6419-4d48-934f-507f0364e032 |
+
+「求められる力」の分け方は、[プロフィール](https://github.com/takashi-101) の「FDE・AXで求められる力と、その根拠」と同じです。
 
 ## ライセンス
 MIT
